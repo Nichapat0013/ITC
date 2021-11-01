@@ -1,0 +1,134 @@
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 32 // OLED display height, in pixels
+
+#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+#define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
+Adafruit_SSD1306 OLED(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+int button_increase_hour = 7;
+int button_increase_min = 6;
+int button_next = 5;
+int button_save_time = 4;
+long bounce_time_delay = 150;
+int timer_start_hour = 0;
+int timer_start_minute = 0;
+int timer_start_second = 0;
+
+void setup() {
+  Serial.begin(9600);
+  OLED.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  pinMode(button_increase_hour, INPUT);
+  pinMode(button_increase_min, INPUT);
+  pinMode(button_next, INPUT);
+  pinMode(button_save_time, INPUT);
+}
+
+void loop() {
+  OLED.clearDisplay();
+  write_time();
+  check_time();
+  button_increase_number();
+  button_increase_number_min();
+  delay(200);
+}
+
+void button_increase_number() {
+  int state = digitalRead(button_increase_hour);
+  
+  if (state == 1) {
+    if(millis() > bounce_time_delay){
+       timer_start_hour++;
+    }
+  }
+}
+
+void button_increase_number_min() {
+  int state = digitalRead(button_increase_min);
+  
+  if (state == 1) {
+    if(millis() > bounce_time_delay){
+       timer_start_minute++;
+    }
+  }
+}
+  
+
+void write_time() {
+  Serial.println(timer_start_second);
+  OLED.setTextColor(WHITE);
+  OLED.setCursor(52, 10);
+  OLED.setTextSize(3);
+  OLED.println(":");
+  if(timer_start_hour < 10) {
+    OLED.setTextColor(WHITE);
+    OLED.setCursor(10, 10);
+    OLED.setTextSize(3);
+    OLED.println("0");
+    OLED.display();
+    OLED.setTextColor(WHITE);
+    OLED.setCursor(30, 10);
+    OLED.setTextSize(3);
+    OLED.println(timer_start_hour);
+    OLED.display();
+  }
+  if(timer_start_hour >= 10 && timer_start_hour < 24){
+    OLED.setTextColor(WHITE);
+    OLED.setCursor(10, 10);
+    OLED.setTextSize(3);
+    OLED.println(timer_start_hour);
+    OLED.display(); 
+  }
+  if(timer_start_minute < 10) {
+    OLED.setTextColor(WHITE);
+    OLED.setCursor(75, 10);
+    OLED.setTextSize(3);
+    OLED.println("0");
+    //OLED.display();
+    OLED.setTextColor(WHITE);
+    OLED.setCursor(95, 10);
+    OLED.setTextSize(3);
+    OLED.println(timer_start_minute);
+    OLED.display();
+  }
+  if(timer_start_minute >= 10 && timer_start_minute < 60){
+    OLED.setTextColor(WHITE);
+    OLED.setCursor(75, 10);
+    OLED.setTextSize(3);
+    OLED.println(timer_start_minute);
+    OLED.display();
+  }
+  //timer_start_second++;
+  //if(timer_start_second == 60){
+  //  timer_start_minute++;
+  //  timer_start_second = 0;
+  //}
+  //if(timer_start_minute == 60){
+  //  timer_start_hour++;
+  //  timer_start_minute = 0;
+  //}
+  
+  //if(timer_start_hour == 24) {
+   //   timer_start_hour = 0;
+   // } 
+}
+
+void check_time() {
+  timer_start_second++;
+   if(timer_start_second == 60){
+    timer_start_minute++;
+    timer_start_second = 0;
+  }
+  if(timer_start_minute == 60){
+    timer_start_hour++;
+    timer_start_minute = 0;
+  }
+  
+  if(timer_start_hour == 24) {
+      timer_start_hour = 0;
+} 
+  }

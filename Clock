@@ -69,7 +69,6 @@ void write_time() {
     OLED.setCursor(10, 10);
     OLED.setTextSize(3);
     OLED.println("0");
-    OLED.display();
     OLED.setTextColor(WHITE);
     OLED.setCursor(30, 10);
     OLED.setTextSize(3);
@@ -88,7 +87,6 @@ void write_time() {
     OLED.setCursor(75, 10);
     OLED.setTextSize(3);
     OLED.println("0");
-    //OLED.display();
     OLED.setTextColor(WHITE);
     OLED.setCursor(95, 10);
     OLED.setTextSize(3);
@@ -102,19 +100,6 @@ void write_time() {
     OLED.println(timer_start_minute);
     OLED.display();
   }
-  //timer_start_second++;
-  //if(timer_start_second == 60){
-  //  timer_start_minute++;
-  //  timer_start_second = 0;
-  //}
-  //if(timer_start_minute == 60){
-  //  timer_start_hour++;
-  //  timer_start_minute = 0;
-  //}
-  
-  //if(timer_start_hour == 24) {
-   //   timer_start_hour = 0;
-   // } 
 }
 
 void check_time() {
